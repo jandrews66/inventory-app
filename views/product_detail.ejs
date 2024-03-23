@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <link rel='stylesheet' href='/stylesheets/style.css' />
+    <%- include('./partials/head'); %>
+  </head>
+  <body>
+    <header>
+      <%- include('./partials/header'); %>
+    </header>
+    <h1>Product: <%= product.name %></h1>
+    <p>Category: <%= product.category.name %></p>
+
+    <p><%= product.description %></p>
+
+    <p>$<%= product.price %></p>
+    <p>Quantity: <%= product.quantity %></p>
+
+  </body>
+</html>

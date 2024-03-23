@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <link rel='stylesheet' href='/stylesheets/style.css' />
+    <%- include('./partials/head'); %>
+  </head>
+  <body>
+    <header>
+      <%- include('./partials/header'); %>
+    </header>
+    <h1>Brand: <%= brand.name %></h1>
+    <ul>
+        <% if (brand_products.length > 0) { %>
+            <% brand_products.forEach(function(product) { %>
+                <li>
+                  <a href="<%= product.url %>"><%= product.name %></a>
+                  $<%= product.price %>
+                </li>
+             <% }); %>
+        <% } else { %>
+            <li><p>There are no products for this brand.</p></li>
+        <% } %>
+    </ul>
+    
+  </body>
+</html>

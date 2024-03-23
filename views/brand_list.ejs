@@ -9,17 +9,14 @@
       <%- include('./partials/header'); %>
     </header>
     <h1><%= title %></h1>
-    <p>The inventory app has the following record counts:</p>
     <ul>
-      <li>
-        Products: <%= product_count %>
-      </li>
-      <li>
-        Brands: <%= brand_count %>
-      </li>
-      <li>
-        Categories: <%= category_count %>
-      </li>
+        <% brand_list.forEach(function(brand) { %>
+            <li>
+                <a href="<%= brand.url %>"><strong><%= brand.name %></strong></a> -
+                <%= brand.description %>
+
+            </li>
+       <% }); %>
 
     </ul>
 
