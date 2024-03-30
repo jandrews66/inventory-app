@@ -1,6 +1,7 @@
 const Product = require("../models/product");
 const Brand = require("../models/brand");
 const Category = require("../models/category");
+const { body, validationResult } = require("express-validator");
 
 const asyncHandler = require("express-async-handler");
 
@@ -51,22 +52,98 @@ exports.product_detail = asyncHandler(async (req, res, next) => {
 
 // Display Product create form on GET.
 exports.product_create_get = asyncHandler(async (req, res, next) => {
-  res.send("NOT IMPLEMENTED: Product create GET");
+  const [allCategories, allBrands] = await Promise.all([
+    Category.find().sort({ name: 1}).exec(),
+    Brand.find().sort({ name: 1}).exec(),
+  ]);
+
+  res.render("product_form", {
+    title: "Create Product",
+    categories: allCategories,
+    brands: allBrands,
+  })
 });
 
 // Handle Product create on POST.
-exports.product_create_post = asyncHandler(async (req, res, next) => {
-  res.send("NOT IMPLEMENTED: Product create POST");
-});
+exports.product_create_post = [
+    body("name", "Name must not be empty.")
+    .trim()
+    .isLength({ min: 1 })
+    .escape(),
+    body("description", "Description must not be empty.")
+    .trim()
+    .isLength({ min: 1 })
+    .escape(),
+    body("price", "Must be a number up to 2 decimal places e.g 10.99 or 9.00")
+    .trim()
+    .isLength({ min: 1 })
+    .isFloat({ min: 0, max: 999999.99 }) // Limiting to 2 decimal places and a maximum value of 999999.99
+    .toFloat() // Convert to float
+    .escape(),
+    body("quantity", "Must be a integer between 0 and 99")
+    .trim()
+    .isLength({ min: 1 })
+    .isInt({ min: 0}, { max: 99 })
+    .escape(),
+    body("brand", "Brand must not be empty.")
+    .trim()
+    .isLength({ min: 1 })
+    .escape(),
+    body("category", "Category must not be empty.")
+    .trim()
+    .isLength({ min: 1 })
+    .escape(),
 
+    asyncHandler(async (req, res, next) => {
+        const errors = validationResult(req);
+
+        const product = new Product({
+            name: req.body.name,
+            description: req.body.description,
+            price: req.body.price,
+            quantity: req.body.quantity,
+            brand: req.body.brand,
+            category: req.body.category,
+        });
+
+        if (!errors.isEmpty()) {
+            const [allCategories, allBrands] = await Promise.all([
+                Category.find().sort({ name: 1}).exec(),
+                Brand.find().sort({ name: 1}).exec(),
+            ]);
+            res.render("product_form", {
+                title: "Create Product",
+                categories: allCategories,
+                brands: allBrands,
+                product: product,
+                errors: errors.array(),
+            });
+        } else {
+            await product.save();
+            res.redirect(product.url);
+        }
+    }),
+];
 // Display Product delete form on GET.
 exports.product_delete_get = asyncHandler(async (req, res, next) => {
-  res.send("NOT IMPLEMENTED: Product delete GET");
+    const product = await Product.findById(req.params.id).exec();
+
+    if (product === null) {
+        res.redirect("/inventory/products")
+    }
+    res.render("product_delete", {
+        title: "Delete Product",
+        product: product
+    });
+
 });
 
 // Handle Product delete on POST.
 exports.product_delete_post = asyncHandler(async (req, res, next) => {
-  res.send("NOT IMPLEMENTED: Product delete POST");
+
+    await Product.findByIdAndDelete(req.body.productid);
+    res.redirect("/inventory/products")
+
 });
 
 // Display Product update form on GET.

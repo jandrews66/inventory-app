@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <link rel='stylesheet' href='/stylesheets/style.css' />
+    <%- include('./partials/head'); %>
+  </head>
+  <body>
+    <header>
+      <%- include('./partials/header'); %>
+    </header>
+    <h1><%= title %></h1>
+
+    <form method="POST">
+        <div class="form-group">
+            <label for="name">Brand Name:</label>
+            <input id="name" class="form-control" type="text" placeholder="Jones, Union etc." name="name" required value="<%= (typeof brand !== 'undefined' ? brand.name : '') %>">
+            <label for="description">Description:</label>
+            <input id="description" class="form-control" type="text" placeholder="" name="description" required>
+        </div>
+        <button class="btn btn-primary" type="submit">Submit</button>
+    </form>
+
+    <% if (typeof errors !== "undefined") { %>
+        <ul>
+            <% errors.forEach(function(error) { %>
+                <li><%= error.msg %></li>
+            <% }); %>
+        </ul>
+    <% } %>
+
+  </body>
+</html>
