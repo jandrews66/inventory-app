@@ -9,6 +9,7 @@
       <%- include('./partials/header'); %>
     </header>
     <h1>Brand: <%= brand.name %></h1>
+    <h3>Current products:</h3>
     <ul>
         <% if (brand_products.length > 0) { %>
             <% brand_products.forEach(function(product) { %>
@@ -24,6 +25,9 @@
     <hr>
     <p>
       <a href="<%= brand.url %>/delete">Delete Brand</a>
+    </p>
+    <p>
+      <a href="<%= brand.url %>/update">Update Brand</a>
     </p>
 
     

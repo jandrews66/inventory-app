@@ -120,10 +120,52 @@ exports.brand_delete_post = asyncHandler(async (req, res, next) => {
 
 // Display Brand update form on GET.
 exports.brand_update_get = asyncHandler(async (req, res, next) => {
-  res.send("NOT IMPLEMENTED: Brand update GET");
+    const brand = await Brand.findById(req.params.id).exec()
+
+    if (brand === null){
+        const err = new Error("Brand not found");
+        err.status = 404;
+        return next (err);
+    }
+
+    res.render("brand_form", {
+        title: "Update Brand",
+        brand: brand,
+    });
 });
 
 // Handle Brand update on POST.
-exports.brand_update_post = asyncHandler(async (req, res, next) => {
-  res.send("NOT IMPLEMENTED: Brand update POST");
-});
+exports.brand_update_post = [
+    body("name")
+    .trim()
+    .isLength({ min: 2 })
+    .escape()
+    .withMessage("Brand name must contain at least 2 characters"),
+    body("description")
+    .trim()
+    .isLength({ min: 2 })
+    .escape()
+    .withMessage("Description name must contain at least 2 characters"),
+
+    asyncHandler(async (req, res, next) => {
+        const errors = validationResult(req);
+
+        const brand = new Brand({
+            name: req.body.name,
+            description: req.body.description,
+            _id: req.params.id
+            });
+
+        if (!errors.isEmpty()) {
+            res.render("brand_form", {
+                title: "Update Brand",
+                brand: brand,
+                errors: errors.array(),
+            });
+            return
+        } else {
+            const updatedBrand = await Brand.findByIdAndUpdate(req.params.id, brand, {});
+            res.redirect(updatedBrand.url);
+        }
+    }),
+]

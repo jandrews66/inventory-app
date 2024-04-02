@@ -148,10 +148,84 @@ exports.product_delete_post = asyncHandler(async (req, res, next) => {
 
 // Display Product update form on GET.
 exports.product_update_get = asyncHandler(async (req, res, next) => {
-  res.send("NOT IMPLEMENTED: Product update GET");
+    const [product, allBrands, allCategories] = await Promise.all([
+        Product.findById(req.params.id).populate("category").exec(),
+        Brand.find().sort({ name: 1 }).exec(),
+        Category.find().sort({ name: 1 }).exec(),
+    ])
+
+    if (product === null) {
+        const err = new Error("Product not found");
+        err.status = 404;
+        return next(err)
+    }
+
+    res.render("product_form", {
+        title: "Update Product",
+        brands: allBrands,
+        categories: allCategories,
+        product: product,
+    });
 });
 
 // Handle Product update on POST.
-exports.product_update_post = asyncHandler(async (req, res, next) => {
-  res.send("NOT IMPLEMENTED: Product update POST");
-});
+exports.product_update_post = [
+    body("name", "Name must not be empty.")
+    .trim()
+    .isLength({ min: 1 })
+    .escape(),
+    body("description", "Description must not be empty.")
+    .trim()
+    .isLength({ min: 1 })
+    .escape(),
+    body("price", "Must be a number up to 2 decimal places e.g 10.99 or 9.00")
+    .trim()
+    .isLength({ min: 1 })
+    .isFloat({ min: 0, max: 999999.99 }) // Limiting to 2 decimal places and a maximum value of 999999.99
+    .toFloat() // Convert to float
+    .escape(),
+    body("quantity", "Must be a integer between 0 and 99")
+    .trim()
+    .isLength({ min: 1 })
+    .isInt({ min: 0}, { max: 99 })
+    .escape(),
+    body("brand", "Brand must not be empty.")
+    .trim()
+    .isLength({ min: 1 })
+    .escape(),
+    body("category", "Category must not be empty.")
+    .trim()
+    .isLength({ min: 1 })
+    .escape(),
+
+    asyncHandler(async (req, res, next) => {
+        const errors = validationResult(req);
+
+        const product = new Product({
+            name: req.body.name,
+            description: req.body.description,
+            price: req.body.price,
+            quantity: req.body.quantity,
+            brand: req.body.brand,
+            category: req.body.category,
+            _id: req.params.id
+        });
+
+        if (!errors.isEmpty()) {
+            const [allCategories, allBrands] = await Promise.all([
+                Category.find().sort({ name: 1}).exec(),
+                Brand.find().sort({ name: 1}).exec(),
+            ]);
+            res.render("product_form", {
+                title: "Create Product",
+                categories: allCategories,
+                brands: allBrands,
+                product: product,
+                errors: errors.array(),
+            });
+        } else {
+            const updatedProduct = await Product.findByIdAndUpdate(req.params.id, product, {});
+            res.redirect(updatedProduct.url)
+        }
+    }),
+];

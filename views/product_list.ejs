@@ -13,7 +13,7 @@
         <% product_list.forEach(function(product) { %>
             <li>
                 <a href="<%= product.url %>"><%= product.name %></a>
-                $<%= product.price %>
+                $<%= product.price.toFixed(2) %>
                 <%= product.category.name %>
             </li>
        <% }); %>

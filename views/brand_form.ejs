@@ -15,7 +15,7 @@
             <label for="name">Brand Name:</label>
             <input id="name" class="form-control" type="text" placeholder="Jones, Union etc." name="name" required value="<%= (typeof brand !== 'undefined' ? brand.name : '') %>">
             <label for="description">Description:</label>
-            <input id="description" class="form-control" type="text" placeholder="" name="description" required>
+            <input id="description" class="form-control" type="text" placeholder="" name="description" required value="<%= (typeof brand !== 'undefined' ? brand.description : '') %>">
         </div>
         <button class="btn btn-primary" type="submit">Submit</button>
     </form>
