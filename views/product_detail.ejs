@@ -15,7 +15,9 @@
 
     <p>$<%= product.price.toFixed(2) %></p>
     <p>Quantity: <%= product.quantity %></p>
-    <img src="/images/uploads/<%= product.img %>" style="width: 200px; height: 200px;">
+    <% if (typeof product.img !== "undefined") { %>
+      <img src="/images/uploads/<%= product.img %>" style="width: 200px; height: 200px;">
+    <% } %>
 
     <hr>
     <p>

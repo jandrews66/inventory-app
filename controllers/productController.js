@@ -172,6 +172,7 @@ exports.product_update_get = asyncHandler(async (req, res, next) => {
 
 // Handle Product update on POST.
 exports.product_update_post = [
+    upload.single('image'),
     body("name", "Name must not be empty.")
     .trim()
     .isLength({ min: 1 })
@@ -201,16 +202,23 @@ exports.product_update_post = [
     .escape(),
 
     asyncHandler(async (req, res, next) => {
+        const product = await Product.findById(req.params.id).exec();
         const errors = validationResult(req);
-
-        const product = new Product({
+        let imgUrl = product.image
+        // Check if req.file exists and has filename property
+        if (req.file && req.file.filename) {
+            //overwrite imgUrl if new file has been selected
+            imgUrl = req.file.filename;
+        }
+        const newProduct = new Product({
             name: req.body.name,
             description: req.body.description,
             price: req.body.price,
             quantity: req.body.quantity,
             brand: req.body.brand,
             category: req.body.category,
-            _id: req.params.id
+            img: imgUrl,
+            _id: req.params.id,
         });
 
         if (!errors.isEmpty()) {
@@ -226,7 +234,7 @@ exports.product_update_post = [
                 errors: errors.array(),
             });
         } else {
-            const updatedProduct = await Product.findByIdAndUpdate(req.params.id, product, {});
+            const updatedProduct = await Product.findByIdAndUpdate(req.params.id, newProduct, {});
             res.redirect(updatedProduct.url)
         }
     }),
