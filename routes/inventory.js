@@ -6,7 +6,7 @@ const product_controller = require("../controllers/productController");
 const brand_controller = require("../controllers/brandController");
 const category_controller = require("../controllers/categoryController");
 
-/// BOOK ROUTES ///
+/// PRODUCT ROUTES ///
 
 // GET inventory home page.
 router.get("/", product_controller.index);
@@ -35,7 +35,7 @@ router.get("/product/:id", product_controller.product_detail);
 // GET request for list of all Product items.
 router.get("/products", product_controller.product_list);
 
-/// AUTHOR ROUTES ///
+/// BRAND ROUTES ///
 
 // GET request for creating Brand. NOTE This must come before route for id (i.e. display brand).
 router.get("/brand/create", brand_controller.brand_create_get);
@@ -61,7 +61,7 @@ router.get("/brand/:id", brand_controller.brand_detail);
 // GET request for list of all Brands.
 router.get("/brands", brand_controller.brand_list);
 
-/// GENRE ROUTES ///
+/// CATEGORY ROUTES ///
 
 // GET request for creating a Category. NOTE This must come before route that displays Category (uses id).
 router.get("/category/create", category_controller.category_create_get);

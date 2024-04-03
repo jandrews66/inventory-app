@@ -2,7 +2,7 @@ const Product = require("../models/product");
 const Brand = require("../models/brand");
 const Category = require("../models/category");
 const { body, validationResult } = require("express-validator");
-
+const upload = require('../multer/multer');
 const asyncHandler = require("express-async-handler");
 
 exports.index = asyncHandler(async (req, res, next) => {
@@ -66,6 +66,7 @@ exports.product_create_get = asyncHandler(async (req, res, next) => {
 
 // Handle Product create on POST.
 exports.product_create_post = [
+    upload.single('image'),
     body("name", "Name must not be empty.")
     .trim()
     .isLength({ min: 1 })
@@ -96,7 +97,7 @@ exports.product_create_post = [
 
     asyncHandler(async (req, res, next) => {
         const errors = validationResult(req);
-
+        console.log(req.file)
         const product = new Product({
             name: req.body.name,
             description: req.body.description,
@@ -104,6 +105,7 @@ exports.product_create_post = [
             quantity: req.body.quantity,
             brand: req.body.brand,
             category: req.body.category,
+            img: req.file.filename,
         });
 
         if (!errors.isEmpty()) {
