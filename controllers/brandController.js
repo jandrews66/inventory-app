@@ -17,7 +17,9 @@ exports.brand_list = asyncHandler(async (req, res, next) => {
 exports.brand_detail = asyncHandler(async (req, res, next) => {
     const [brand, productsInBrand] = await Promise.all([
         Brand.findById(req.params.id).exec(),
-        Product.find({ brand: req.params.id }, "name price").exec(),
+        Product.find({ brand: req.params.id }, "name price quantity img")
+        .populate("category")
+        .exec(),
     ])
     if (brand === null) {
         const err = new Error("Brand not fond");

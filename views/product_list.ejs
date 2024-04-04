@@ -10,15 +10,19 @@
     </header>
     <h1><%= title %></h1>
     <ul>
-        <% product_list.forEach(function(product) { %>
-            <li>
-                <a href="<%= product.url %>"><%= product.name %></a>
-                $<%= product.price.toFixed(2) %>
-                <%= product.category.name %>
-            </li>
-       <% }); %>
-
-    </ul>
+      <% product_list.forEach(function(product) { %>
+          <li class="product-card">
+            <img src="/images/uploads/<%= product.img %>" style="width: 100px; height: 100px;">
+            <div class="card-info">
+              <a href="<%= product.url %>"><%= product.name %></a>
+              <p>Category: <%= product.category.name %></p>
+              <p>Brand: <%= product.brand.name %></p>
+              <p>$<%= product.price.toFixed(2) %></p>
+              <p>Quantity: <%= product.quantity %></p>
+            </div>  
+          </li>
+     <% }); %>
+  </ul>
 
   </body>
 </html>

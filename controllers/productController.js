@@ -18,7 +18,7 @@ exports.index = asyncHandler(async (req, res, next) => {
     ]);
 
     res.render("index", {
-        title: "Inventory App Home",
+        title: "Home",
         product_count: numProducts,
         brand_count: numBrands,
         category_count: numCategories,
@@ -27,9 +27,10 @@ exports.index = asyncHandler(async (req, res, next) => {
 
 // Display list of all Products.
 exports.product_list = asyncHandler(async (req, res, next) => {
-  const allProducts = await Product.find({}, "name price")
+  const allProducts = await Product.find({}, "name price quantity img")
   .sort({ name: 1})
   .populate("category")
+  .populate("brand")
   .exec();
   
   res.render("product_list", { title: "Product List", product_list: allProducts})

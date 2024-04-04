@@ -3,7 +3,7 @@ const Product = require("../models/product")
 const asyncHandler = require("express-async-handler");
 const { body, validationResult } = require("express-validator");
 
-// Display list of all Categorys.
+// Display list of all Categories.
 exports.category_list = asyncHandler(async (req, res, next) => {
     const allCategories = await Category.find({}, "name").sort({ name: 1}).exec();
     res.render("category_list", { title: "Category List", category_list: allCategories});
@@ -13,7 +13,9 @@ exports.category_list = asyncHandler(async (req, res, next) => {
 exports.category_detail = asyncHandler(async (req, res, next) => {
     const [category, productsInCategory] = await Promise.all([
         Category.findById(req.params.id).exec(),
-        Product.find({ category: req.params.id }, "name price").exec(),
+        Product.find({ category: req.params.id }, "name price quantity img")
+        .populate("brand")
+        .exec(),
     ])
     if (category === null) {
         const err = new Error("Category not fond");

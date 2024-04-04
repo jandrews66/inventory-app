@@ -13,9 +13,15 @@
     <ul>
         <% if (brand_products.length > 0) { %>
             <% brand_products.forEach(function(product) { %>
-                <li>
-                  <a href="<%= product.url %>"><%= product.name %></a>
-                  $<%= product.price %>
+                <li class="product-card">
+                  <img src="/images/uploads/<%= product.img %>" style="width: 100px; height: 100px;">
+                  <div class="card-info">
+                    <a href="<%= product.url %>"><%= product.name %></a>
+                    <p>Category: <%= product.category.name %></p>
+                    <p>Brand: <%= brand.name %></p>
+                    <p>$<%= product.price.toFixed(2) %></p>
+                    <p>Quantity: <%= product.quantity %></p>
+                  </div>  
                 </li>
              <% }); %>
         <% } else { %>

@@ -6,3 +6,20 @@ body {
 a {
   color: #00B7FF;
 }
+
+h1 {
+  padding: 10px 0;
+}
+ul {
+  list-style: none;
+}
+
+.product-card {
+  display: flex;
+  gap: 1rem;
+  padding: 10px 0;
+}
+
+.card-info > p {
+  margin: 0;
+}

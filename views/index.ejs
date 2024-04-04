@@ -9,16 +9,19 @@
       <%- include('./partials/header'); %>
     </header>
     <h1><%= title %></h1>
-    <p>The inventory app has the following record counts:</p>
+    <p>Welcome to the Snowboard Shop Inventory, a dashboard for managing the inventory of a fake snowboard store business.</p>
+    <p>You can use this dashboard to Create, Read, Update and Delete products. You can also view products by brands and categories.</p>
+    
+    <h5>The inventory contains the following:</h5>
     <ul>
       <li>
-        Products: <%= product_count %>
+        <strong>Products:</strong> <%= product_count %>
       </li>
       <li>
-        Brands: <%= brand_count %>
+        <strong>Brands:</strong> <%= brand_count %>
       </li>
       <li>
-        Categories: <%= category_count %>
+        <strong>Categories:</strong> <%= category_count %>
       </li>
 
     </ul>

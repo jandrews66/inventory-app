@@ -12,9 +12,15 @@
     <ul>
         <% if (category_products.length > 0) { %>
             <% category_products.forEach(function(product) { %>
-                <li>
+                <li class="product-card">
+                  <img src="/images/uploads/<%= product.img %>" style="width: 100px; height: 100px;">
+                  <div class="card-info">
                     <a href="<%= product.url %>"><%= product.name %></a>
-                    $<%= product.price %>
+                    <p>Category: <%= category.name %></p>
+                    <p>Brand: <%= product.brand.name %></p>
+                    <p>$<%= product.price.toFixed(2) %></p>
+                    <p>Quantity: <%= product.quantity %></p>
+                  </div>  
                 </li>
              <% }); %>
         <% } else { %>
