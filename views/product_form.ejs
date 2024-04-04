@@ -63,11 +63,14 @@
       </div>
       <div class="form-group">
         <label for="image">Upload Product Image:</label>
-        <input type="file" name="image" id="image" class="form-control">
-        <% if (typeof product.img !== "undefined") { %>
+        <input type="file" name="image" id="image" class="form-control" >
+        <% if (typeof product !== "undefined" && typeof product.img !== "undefined") { %>
           <img src="/images/uploads/<%= product.img %>" style="width: 50px; height: 50px;">
         <% } %>
 
+      </div>
+      <div class="form-group">
+        <input type="hidden" name="hiddenUrl" id="hiddenUrl" class="form-control" value="<%= (typeof hiddenUrl !== 'undefined' ? hiddenUrl : '') %>">
       </div>
 
       <button class="btn btn-primary" type="submit">Submit</button>

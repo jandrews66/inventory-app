@@ -75,13 +75,13 @@ exports.product_create_post = [
     .trim()
     .isLength({ min: 1 })
     .escape(),
-    body("price", "Must be a number up to 2 decimal places e.g 10.99 or 9.00")
+    body("price", "Price must be a number up to 2 decimal places e.g 10.99 or 9.00")
     .trim()
     .isLength({ min: 1 })
     .isFloat({ min: 0, max: 999999.99 }) // Limiting to 2 decimal places and a maximum value of 999999.99
     .toFloat() // Convert to float
     .escape(),
-    body("quantity", "Must be a integer between 0 and 99")
+    body("quantity", "Quantity must be a integer between 0 and 99")
     .trim()
     .isLength({ min: 1 })
     .isInt({ min: 0}, { max: 99 })
@@ -97,7 +97,13 @@ exports.product_create_post = [
 
     asyncHandler(async (req, res, next) => {
         const errors = validationResult(req);
-        console.log(req.file)
+        let imgUrl = ""
+        if (req.file){
+            imgUrl = req.file.filename
+        } else if (req.body.hiddenUrl) { 
+            //if no file is selected, use the hidden url
+            imgUrl = req.body.hiddenUrl
+        }
         const product = new Product({
             name: req.body.name,
             description: req.body.description,
@@ -105,7 +111,7 @@ exports.product_create_post = [
             quantity: req.body.quantity,
             brand: req.body.brand,
             category: req.body.category,
-            img: req.file.filename,
+            img: imgUrl,
         });
 
         if (!errors.isEmpty()) {
@@ -119,6 +125,10 @@ exports.product_create_post = [
                 brands: allBrands,
                 product: product,
                 errors: errors.array(),
+                //if validation fails, send file url to the view to be stored in a hidden form field.
+                //the hidden url will be used when the form is then submitted correctly
+                //this is a horrible hack i know
+                hiddenUrl: product.img,
             });
         } else {
             await product.save();
@@ -181,13 +191,13 @@ exports.product_update_post = [
     .trim()
     .isLength({ min: 1 })
     .escape(),
-    body("price", "Must be a number up to 2 decimal places e.g 10.99 or 9.00")
+    body("price", "Price must be a number up to 2 decimal places e.g 10.99 or 9.00")
     .trim()
     .isLength({ min: 1 })
     .isFloat({ min: 0, max: 999999.99 }) // Limiting to 2 decimal places and a maximum value of 999999.99
     .toFloat() // Convert to float
     .escape(),
-    body("quantity", "Must be a integer between 0 and 99")
+    body("quantity", "Quantity must be a integer between 0 and 99")
     .trim()
     .isLength({ min: 1 })
     .isInt({ min: 0}, { max: 99 })
@@ -204,7 +214,7 @@ exports.product_update_post = [
     asyncHandler(async (req, res, next) => {
         const product = await Product.findById(req.params.id).exec();
         const errors = validationResult(req);
-        let imgUrl = product.image
+        let imgUrl = product.img
         // Check if req.file exists and has filename property
         if (req.file && req.file.filename) {
             //overwrite imgUrl if new file has been selected
