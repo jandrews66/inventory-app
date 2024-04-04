@@ -4,6 +4,7 @@ const Category = require("../models/category");
 const { body, validationResult } = require("express-validator");
 const upload = require('../multer/multer');
 const asyncHandler = require("express-async-handler");
+const fs = require('fs');
 
 exports.index = asyncHandler(async (req, res, next) => {
     const [
@@ -152,9 +153,18 @@ exports.product_delete_get = asyncHandler(async (req, res, next) => {
 
 // Handle Product delete on POST.
 exports.product_delete_post = asyncHandler(async (req, res, next) => {
-
+    const product = await Product.findById(req.params.id)
+    if (product.img){
+        fs.unlink(`./public/images/uploads/${product.img}`, (err) => {
+            if (err) {
+              console.error(err);
+              return;
+            }
+            console.log('File deleted successfully');
+          }); 
+    }
     await Product.findByIdAndDelete(req.body.productid);
-    res.redirect("/inventory/products")
+    res.redirect("/inventory/products") 
 
 });
 
