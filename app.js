@@ -1,19 +1,45 @@
-var createError = require('http-errors');
-var express = require('express');
-var path = require('path');
-var cookieParser = require('cookie-parser');
-var logger = require('morgan');
+const createError = require('http-errors');
+const express = require('express');
+const path = require('path');
+const cookieParser = require('cookie-parser');
+const logger = require('morgan');
 
-var indexRouter = require('./routes/index');
-var usersRouter = require('./routes/users');
+const indexRouter = require('./routes/index');
+const usersRouter = require('./routes/users');
 const inventoryRouter = require("./routes/inventory")
+const compression = require("compression");
+const helmet = require("helmet");
 
-var app = express();
+const app = express();
+
+// Set up rate limiter: maximum of twenty requests per minute
+const RateLimit = require("express-rate-limit");
+const limiter = RateLimit({
+  windowMs: 1 * 60 * 1000, // 1 minute
+  max: 100,
+});
+// Apply rate limiter to all requests
+app.use(limiter);
+
+// Add helmet to the middleware chain.
+// Set CSP headers to allow our Bootstrap and Jquery to be served
+app.use(
+  helmet.contentSecurityPolicy({
+    directives: {
+      "script-src": ["'self'", "code.jquery.com", "cdn.jsdelivr.net"],
+    },
+  }),
+);
 
 // Set up mongoose connection
 const mongoose = require("mongoose");
 mongoose.set("strictQuery", false);
-const mongoDB = "mongodb+srv://joeandrews92:MIvd9PBjnyv0K9tn@cluster0.p2jic2r.mongodb.net/inventory_app?retryWrites=true&w=majority&appName=Cluster0";
+
+const dev_db_url = 
+
+"mongodb+srv://joeandrews92:MIvd9PBjnyv0K9tn@cluster0.p2jic2r.mongodb.net/inventory_app?retryWrites=true&w=majority&appName=Cluster0";
+const mongoDB = process.envMONGODB_URI || dev_db_url;
+
 
 main().catch((err) => console.log(err));
 async function main() {
@@ -23,6 +49,8 @@ async function main() {
 // view engine setup
 app.set('views', path.join(__dirname, 'views'));
 app.set('view engine', 'ejs');
+
+app.use(compression()); // Compress all routes
 
 app.use(logger('dev'));
 app.use(express.json());
