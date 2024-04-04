@@ -38,7 +38,7 @@ mongoose.set("strictQuery", false);
 const dev_db_url = 
 
 "mongodb+srv://joeandrews92:MIvd9PBjnyv0K9tn@cluster0.p2jic2r.mongodb.net/inventory_app?retryWrites=true&w=majority&appName=Cluster0";
-const mongoDB = process.envMONGODB_URI || dev_db_url;
+const mongoDB = process.env.MONGODB_URI || dev_db_url;
 
 
 main().catch((err) => console.log(err));
